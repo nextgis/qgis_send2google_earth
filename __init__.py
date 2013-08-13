@@ -5,7 +5,7 @@
 # ---------------------------------------------------------
 # This plugin takes coordinates of a mouse click and sends them to Google Earth
 #
-# Copyright (C) 2013 Maxim Dubinin (sim@gis-lab.inf), NextGIS (info@nextgis.org)
+# Copyright (C) 2013 Maxim Dubinin (sim@gis-lab.info), NextGIS (info@nextgis.org)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
