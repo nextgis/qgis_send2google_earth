@@ -1,4 +1,6 @@
 send2google_earth
-=================
+==========
 
-QGIS plugin to capture mouse click and send its coordinates to Google Earth
+This is a plugin for QGIS 2.0
+
+It takes the coordinates of the mouse click, creates a temporary file and opens Google Earth with this file.

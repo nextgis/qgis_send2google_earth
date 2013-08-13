@@ -1,0 +1,20 @@
+[general]
+name=Send2GE
+description=Sends current location 
+category=Vector
+version=0.0.1
+qgisMinimumVersion=2.0
+
+author=NextGIS
+email=info@nextgis.org
+
+icon=icons/icon.png
+
+tags=google,google earth
+
+homepage=
+tracker=
+repository=https://github.com/nextgis/send2google_earth
+
+experimental=True
+deprecated=False
