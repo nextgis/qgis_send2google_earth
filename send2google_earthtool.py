@@ -5,7 +5,7 @@
 # ---------------------------------------------------------
 # This plugin takes coordinates of a mouse click and sends them to Google Earth
 #
-# Copyright (C) 2013 Maxim Dubinin (sim@gis-lab.inf), NextGIS (info@nextgis.org)
+# Copyright (C) 2013 Maxim Dubinin (sim@gis-lab.info), NextGIS (info@nextgis.org)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -33,6 +33,7 @@ from qgis.gui import *
 import resources
 import os
 import tempfile
+import platform
 
 class Send2GEtool(QgsMapTool):
   def __init__(self, iface):
@@ -70,13 +71,21 @@ class Send2GEtool(QgsMapTool):
     f.write('</kml>')
     f.close()
 
-    winpath = "c:/Program Files/Google/googleearth.exe"
-    if os.path.exists(winpath):
-      ret = os.system("\"" + winpath + "\""+ f.name)
+    winpath = "C:/Program Files/Google/Google Earth/client/googleearth.exe"
+    linpath = "google-earth"
+    unknown = False
+    
+    if platform.system() == 'Windows':
+      cmd = "start /B " + "\"" + winpath + "\" "+ f.name
+      ret = os.system(cmd)
+    elif platform.system() == 'Linux':
+      ret = os.system(linpath + " " + f.name)
     else:
-      ret = os.system("google-earth " + f.name)
+      unknown = True
 
+    if unknown == True:
+        QMessageBox.warning(self.canvas,"Error","Unknown system")
     if ret != 0:
-      QMessageBox.warning(self.canvas,"Error","Unable to send to GE, executable not found"
-                         )
-    os.unlink(f.name)
+      QMessageBox.warning(self.canvas,"Error","Unable to send to GE, executable not found.\n I tried " + winpath + " \n and\n" + linpath)
+    
+    #os.unlink(f.name)

@@ -62,7 +62,6 @@ class Send2GE:
     self.iface.addPluginToMenu("Send2GoogleEarth",self.action)
     
     # add icon to new menu item in Vector toolbar
-    self.iface.addVectorToolBarIcon(self.action)
     self.iface.addToolBarIcon(self.action)
 
     # connect action to the run method
