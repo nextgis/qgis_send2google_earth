@@ -2,7 +2,7 @@
 name=Send2GE
 description=Sends current location 
 category=Vector
-version=0.0.1
+version=0.0.2
 qgisMinimumVersion=2.0
 
 author=NextGIS

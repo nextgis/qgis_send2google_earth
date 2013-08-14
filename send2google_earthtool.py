@@ -48,6 +48,11 @@ class Send2GEtool(QgsMapTool):
   def activate(self):
     self.canvas.setCursor(self.cursor)
 
+  def create_kml(x,y):
+    
+    
+    return f
+  
   def canvasReleaseEvent(self, event):
 
     QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -56,6 +61,13 @@ class Send2GEtool(QgsMapTool):
     point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
     QApplication.restoreOverrideCursor()
 
+    crsSrc = self.canvas.mapRenderer().destinationCrs()
+    crsWGS = QgsCoordinateReferenceSystem(4326)
+    
+    if crsSrc.authid() != "4326":
+        xform = QgsCoordinateTransform(crsSrc, crsWGS)
+        point = xform.transform(QgsPoint(point.x(),point.y()))
+    
     f = tempfile.NamedTemporaryFile(suffix = ".kml",delete=False)
     f.write('<?xml version="1.0" encoding="UTF-8"?>')
     f.write('<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">')
