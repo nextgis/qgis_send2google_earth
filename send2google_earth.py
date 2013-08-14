@@ -75,7 +75,7 @@ class Send2GE:
     """Actions to run when the plugin is unloaded"""
     # remove menu and icon from the menu
     self.iface.removeToolBarIcon(self.action)
-    self.iface.removePluginMenu("Send2GE",self.action)
+    self.iface.removePluginMenu("Send2GoogleEarth",self.action)
 
     if self.iface.mapCanvas().mapTool() == self.mapTool:
       self.iface.mapCanvas().unsetMapTool(self.mapTool)
