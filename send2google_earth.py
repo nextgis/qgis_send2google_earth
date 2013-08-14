@@ -74,8 +74,8 @@ class Send2GE:
   def unload(self):
     """Actions to run when the plugin is unloaded"""
     # remove menu and icon from the menu
-    self.iface.removeVectorToolBarIcon(self.action)
-    self.iface.removePluginVectorMenu("Send2GE",self.action)
+    self.iface.removeToolBarIcon(self.action)
+    self.iface.removePluginMenu("Send2GE",self.action)
 
     if self.iface.mapCanvas().mapTool() == self.mapTool:
       self.iface.mapCanvas().unsetMapTool(self.mapTool)
