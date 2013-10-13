@@ -92,11 +92,13 @@ class Send2GEtool(QgsMapTool):
       ret = os.system(cmd)
     elif platform.system() == 'Linux':
       ret = os.system(linpath + " " + f.name)
+    elif platform.system() == "Darwin":
+         ret = os.system("open " + f.name)
     else:
       unknown = True
 
     if unknown == True:
-        QMessageBox.warning(self.canvas,"Error","Unknown system")
+        QMessageBox.warning(self.canvas,"Error","Unknown operation system. Please let developers of the plugin know.")
     if ret != 0:
       QMessageBox.warning(self.canvas,"Error","Unable to send to GE, executable not found.\n I tried " + winpath + " \n and\n" + linpath)
     

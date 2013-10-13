@@ -2,7 +2,7 @@
 name=Send2GE
 description=Sends current location to Google Earth (should be installed)
 category=Vector
-version=0.0.3
+version=0.0.4
 qgisMinimumVersion=2.0
 
 author=Maxim Dubinin (NextGIS)
