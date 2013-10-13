@@ -54,7 +54,7 @@ class Send2GE:
 
     #create action that will be run by the plugin
     self.action = QAction("Send to Google Earth", self.iface.mainWindow())
-    self.action.setIcon(QIcon(":/icons/cursor.png"))
+    self.action.setIcon(QIcon(":/icons/cursor2.png"))
     self.action.setWhatsThis("Send to Google Earth")
     self.action.setStatusTip("Send coordinates of a mouse click to Google Earth")
     
