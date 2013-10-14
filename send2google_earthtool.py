@@ -43,7 +43,7 @@ class Send2GEtool(QgsMapTool):
     #self.emitPoint = QgsMapToolEmitPoint(self.canvas)
     self.iface = iface
 
-    self.cursor = QCursor(QPixmap(":/icons/cursor.png"), 1, 1)
+    self.cursor = QCursor(QPixmap(":/icons/cursor2.png"), 1, 1)
 
   def activate(self):
     self.canvas.setCursor(self.cursor)
@@ -86,20 +86,22 @@ class Send2GEtool(QgsMapTool):
     winpath = "C:/Program Files/Google/Google Earth/client/googleearth.exe"
     linpath = "google-earth"
     unknown = False
+    ret = 0
     
     if platform.system() == 'Windows':
-      cmd = "start /B " + "\"" + winpath + "\" "+ f.name
-      ret = os.system(cmd)
+      #cmd = "start /B " + "\"" + winpath + "\" "+ f.name
+      #ret = os.system(cmd)
+      os.startfile(f.name)
     elif platform.system() == 'Linux':
       ret = os.system(linpath + " " + f.name)
     elif platform.system() == "Darwin":
-         ret = os.system("open " + f.name)
+      ret = os.system("open " + f.name)
     else:
       unknown = True
 
     if unknown == True:
-        QMessageBox.warning(self.canvas,"Error","Unknown operation system. Please let developers of the plugin know.")
+      QMessageBox.warning(self.canvas,"Error","Unknown operation system. Please let developers of the plugin know.")
     if ret != 0:
-      QMessageBox.warning(self.canvas,"Error","Unable to send to GE, executable not found.\n I tried " + winpath + " \n and\n" + linpath)
+      QMessageBox.warning(self.canvas,"Error","Unable to send to GE, executable not found.\n I tried " + linpath)
     
     #os.unlink(f.name)
