@@ -5,7 +5,7 @@
 # ---------------------------------------------------------
 # This plugin takes coordinates of a mouse click and sends them to Google Earth
 #
-# Copyright (C) 2013 Maxim Dubinin (sim@gis-lab.info), NextGIS (info@nextgis.org)
+# Copyright (C) 2013-2015 Maxim Dubinin (sim@gis-lab.info), NextGIS (info@nextgis.org)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -34,6 +34,7 @@ import resources
 import os
 import tempfile
 import platform
+import subprocess
 
 class Send2GEtool(QgsMapTool):
   def __init__(self, iface):
@@ -43,7 +44,7 @@ class Send2GEtool(QgsMapTool):
     #self.emitPoint = QgsMapToolEmitPoint(self.canvas)
     self.iface = iface
 
-    self.cursor = QCursor(QPixmap(":/icons/cursor2.png"), 1, 1)
+    self.cursor = QCursor(QPixmap(':/icons/cursor2.png'), 1, 1)
 
   def activate(self):
     self.canvas.setCursor(self.cursor)
@@ -60,7 +61,8 @@ class Send2GEtool(QgsMapTool):
     y = event.pos().y()
     point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
     QApplication.restoreOverrideCursor()
-
+    
+    
     crsSrc = self.canvas.mapRenderer().destinationCrs()
     crsWGS = QgsCoordinateReferenceSystem(4326)
     
@@ -82,26 +84,38 @@ class Send2GEtool(QgsMapTool):
     f.write('</Document>')
     f.write('</kml>')
     f.close()
-
-    winpath = "C:/Program Files/Google/Google Earth/client/googleearth.exe"
-    linpath = "google-earth"
+    
+    winpath = 'C:/Program Files/Google/Google Earth/client/googleearth.exe'
+    if not os.path.exists(winpath): winpath = 'C:/Program Files (x86)/Google/Google Earth/client/googleearth.exe'
+    
+    linpath = 'google-earth'
+    linpath_debian = 'googleearth'
+    
     unknown = False
     ret = 0
     
     if platform.system() == 'Windows':
       #cmd = "start /B " + "\"" + winpath + "\" "+ f.name
       #ret = os.system(cmd)
-      os.startfile(f.name)
+      if event.modifiers() == Qt.ShiftModifier:
+        subprocess.Popen([winpath, f.name])
+      else:
+        os.startfile(f.name)
     elif platform.system() == 'Linux':
-      ret = os.system(linpath + " " + f.name)
+      if platform.dist[0] == 'debian':
+        linpath = linpath_debian
+      if event.modifiers() == Qt.ShiftModifier:
+        ret = os.fork(linpath + " " + f.name)
+      else:
+        ret = os.system(linpath + " " + f.name)
     elif platform.system() == "Darwin":
       ret = os.system("open " + f.name)
     else:
       unknown = True
 
     if unknown == True:
-      QMessageBox.warning(self.canvas,"Error","Unknown operation system. Please let developers of the plugin know.")
+      QMessageBox.warning(self.canvas,'Error','Unknown operation system. Please let developers of the plugin know.')
     if ret != 0:
-      QMessageBox.warning(self.canvas,"Error","Unable to send to GE, executable not found.\n I tried " + linpath)
+      QMessageBox.warning(self.canvas,'Error','Unable to send to GE, executable not found.\n I tried ' + linpath)
     
     #os.unlink(f.name)
