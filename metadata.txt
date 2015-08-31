@@ -1,8 +1,9 @@
 [general]
 name=Send2GE
-description=Sends current location to Google Earth (should be installed)
+description=Sends current location to Google Earth (should be installed). Shift+click for QGIS not to loose focus.
+about=Simple tool that grabs current location and sends it to Google Earth. Focus can be shifted to GE (default) or you can keep QGIS active (convenient when GE is on a different screen).
 category=Vector
-version=0.0.4
+version=0.1
 qgisMinimumVersion=2.0
 
 author=Maxim Dubinin (NextGIS)
@@ -16,5 +17,5 @@ homepage=https://github.com/nextgis/send2google_earth
 tracker=https://github.com/nextgis/send2google_earth/issues
 repository=https://github.com/nextgis/send2google_earth
 
-experimental=True
+experimental=False
 deprecated=False
