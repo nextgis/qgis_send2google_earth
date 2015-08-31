@@ -105,9 +105,9 @@ class Send2GEtool(QgsMapTool):
       if platform.dist()[0] == 'debian':
         linpath = linpath_debian
       if event.modifiers() == Qt.ShiftModifier:
-        ret = os.fork(linpath + " " + f.name)
+        ret = subprocess.Popen([linpath,f.name]) #ret = os.fork(linpath + " " + f.name)
       else:
-        ret = os.startfile(f.name)
+        ret = os.system(linpath + " " + f.name)
     elif platform.system() == "Darwin":
       ret = os.system("open " + f.name)
     else:
