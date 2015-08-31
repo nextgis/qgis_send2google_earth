@@ -107,7 +107,7 @@ class Send2GEtool(QgsMapTool):
       if event.modifiers() == Qt.ShiftModifier:
         ret = os.fork(linpath + " " + f.name)
       else:
-        ret = os.system(linpath + " " + f.name)
+        ret = os.startfile(f.name)
     elif platform.system() == "Darwin":
       ret = os.system("open " + f.name)
     else:
