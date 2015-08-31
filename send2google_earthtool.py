@@ -102,7 +102,7 @@ class Send2GEtool(QgsMapTool):
       else:
         os.startfile(f.name)
     elif platform.system() == 'Linux':
-      if platform.dist[0] == 'debian':
+      if platform.dist()[0] == 'debian':
         linpath = linpath_debian
       if event.modifiers() == Qt.ShiftModifier:
         ret = os.fork(linpath + " " + f.name)
