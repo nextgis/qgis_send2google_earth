@@ -12,6 +12,8 @@ email=info@nextgis.com
 changelog= 0.1:
         * add Shift+click to open GE without loosing focus
         * change Debian GE binary name for Debian
+        * do not block window on Linux
+        * few alternatives for GE location on Windows
 
 icon=icons/icon.png
 
