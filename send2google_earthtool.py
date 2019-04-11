@@ -24,13 +24,14 @@
 #
 #******************************************************************************
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from qgis.core import *
 from qgis.gui import *
 
-import resources
+from .resources import *
 import os
 import tempfile
 import platform
@@ -63,30 +64,30 @@ class Send2GEtool(QgsMapTool):
     QApplication.restoreOverrideCursor()
     
     
-    crsSrc = self.canvas.mapRenderer().destinationCrs()
+    crsSrc = self.canvas.mapSettings().destinationCrs()
     crsWGS = QgsCoordinateReferenceSystem(4326)
     
     if crsSrc.authid() != "4326":
-        xform = QgsCoordinateTransform(crsSrc, crsWGS)
-        point = xform.transform(QgsPoint(point.x(),point.y()))
+        xform = QgsCoordinateTransform(crsSrc, crsWGS, QgsProject.instance())
+        point = xform.transform(point)
     
-    f = tempfile.NamedTemporaryFile(suffix = ".kml",delete=False)
-    f.write('<?xml version="1.0" encoding="UTF-8"?>')
-    f.write('<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">')
-    f.write('<Document>')
-    f.write('   <name>' + f.name + '</name>')
-    f.write('   <Placemark>')
-    f.write('       <Point>')
-    f.write('       <name>test</name>')
-    f.write('           <coordinates>' + str(point.x()) +','+ str(point.y()) + ',0</coordinates>')
-    f.write('       </Point>')
-    f.write('   </Placemark>')
-    f.write('</Document>')
-    f.write('</kml>')
+    f = tempfile.NamedTemporaryFile(suffix = ".kml",delete=False, mode='w', encoding='utf-8')
+    f.write(r'<?xml version="1.0" encoding="UTF-8"?>')
+    f.write(r'<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">')
+    f.write(r'<Document>')
+    f.write(r'   <name>' + f.name + r'</name>')
+    f.write(r'   <Placemark>')
+    f.write(r'       <Point>')
+    f.write(r'       <name>test</name>')
+    f.write(r'           <coordinates>' + str(point.x()) +','+ str(point.y()) + r',0</coordinates>')
+    f.write(r'       </Point>')
+    f.write(r'   </Placemark>')
+    f.write(r'</Document>')
+    f.write(r'</kml>')
     f.close()
     
-    winpath = 'C:/Program Files/Google/Google Earth/client/googleearth.exe'
-    if not os.path.exists(winpath): winpath = 'C:/Program Files (x86)/Google/Google Earth/client/googleearth.exe'
+    winpath = r'C:/Program Files/Google/Google Earth/client/googleearth.exe'
+    if not os.path.exists(winpath): winpath = r'C:/Program Files (x86)/Google/Google Earth/client/googleearth.exe'
     
     linpath = 'google-earth'
     linpath_debian = 'googleearth'
