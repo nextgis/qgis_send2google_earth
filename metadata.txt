@@ -3,13 +3,17 @@ name=Send2GE
 description=Sends current location to Google Earth (should be installed). Shift+click for QGIS not to loose focus.
 about=Simple tool that grabs current location and sends it to Google Earth. Focus can be shifted to GE (default) or you can keep QGIS active (convenient when GE is on a different screen).
 category=Vector
-version=0.1
+version=0.2.1
 qgisMinimumVersion=2.0
 
 author=Maxim Dubinin (NextGIS)
 email=info@nextgis.com
 
-changelog= 0.1:
+changelog=0.2.1
+		* Some fixes  
+	0.2:
+		* Use xdotool (command-line X11 automation tool) for control Google Earth in Linux
+	0.1:
         * add Shift+click to open GE without loosing focus
         * change Debian GE binary name for Debian
         * do not block window on Linux

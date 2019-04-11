@@ -102,12 +102,37 @@ class Send2GEtool(QgsMapTool):
       else:
         os.startfile(f.name)
     elif platform.system() == 'Linux':
-      if platform.dist()[0] == 'debian':
-        linpath = linpath_debian
-      if event.modifiers() == Qt.ShiftModifier:
-        subprocess.Popen([linpath,f.name]) #ret = os.fork(linpath + " " + f.name)
-      else:
-        subprocess.Popen([linpath,f.name])
+        google_earth_window_name = "Google Earth"
+        tool = "xdotool"
+        args = [tool, "search", "--name", google_earth_window_name]
+        args.extend(["windowactivate", "--sync", "%@"])
+        args.extend(["mousemove", "--window", "%@", "15", "65"])
+        args.extend(["click", "--repeat", "3", "1"])
+        try:
+            subprocess.check_call(args)
+        except OSError as err:
+            QMessageBox.warning(self.canvas, 'Error', 'There is no xdotool util in system. Please install it and try again.')
+            return
+        except subprocess.CalledProcessError as err:
+            QMessageBox.warning(self.canvas, 'Error', 'There is no Google Earth running. Please run it and try again.')
+            return
+
+        args = [tool, "search", "--name", google_earth_window_name]
+        args.extend(["windowactivate", "--sync", "%@"])
+        coordinates_str = "%s %s" % (point.y(), point.x(), )
+        coordinates_keys = ["key", "--window", "%@", ]
+        for symbol in coordinates_str:
+            if symbol == "-":
+                symbol = "minus"
+            elif symbol == " ":
+                symbol = "space"
+            elif symbol == ".":
+                symbol = "U002E"
+            coordinates_keys.append(symbol)
+        args.extend(coordinates_keys)
+        args.extend(["Return"])
+        subprocess.call(args)
+      
     elif platform.system() == "Darwin":
       ret = os.system("open " + f.name)
     else:
