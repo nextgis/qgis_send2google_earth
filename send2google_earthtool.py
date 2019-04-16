@@ -85,23 +85,24 @@ class Send2GEtool(QgsMapTool):
     f.write(r'</Document>')
     f.write(r'</kml>')
     f.close()
-    
-    winpath = r'C:/Program Files/Google/Google Earth/client/googleearth.exe'
-    if not os.path.exists(winpath): winpath = r'C:/Program Files (x86)/Google/Google Earth/client/googleearth.exe'
-    
+
     linpath = 'google-earth'
-    linpath_debian = 'googleearth'
-    
+
     unknown = False
     ret = 0
     
     if platform.system() == 'Windows':
-      #cmd = "start /B " + "\"" + winpath + "\" "+ f.name
-      #ret = os.system(cmd)
-      if event.modifiers() == Qt.ShiftModifier:
-        subprocess.Popen([winpath, f.name])
-      else:
-        os.startfile(f.name)
+        winpath = r'C:/Program Files/Google/Google Earth/client/googleearth.exe'
+        if not os.path.exists(winpath): winpath = r'C:/Program Files (x86)/Google/Google Earth/client/googleearth.exe'
+        if not os.path.exists(
+            winpath): winpath = r'C:/Program Files (x86)/Google/Google Earth Pro/client/googleearth.exe'
+        if not os.path.exists(winpath): winpath = r'C:/Program Files/Google/Google Earth Pro/client/googleearth.exe'
+
+        if event.modifiers() == Qt.ShiftModifier:
+            subprocess.Popen([winpath, f.name])
+        else:
+            os.startfile(f.name)
+
     elif platform.system() == 'Linux':
         google_earth_window_name = "Google Earth"
         tool = "xdotool"
