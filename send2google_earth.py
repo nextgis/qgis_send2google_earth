@@ -24,14 +24,16 @@
 #
 #******************************************************************************
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QAction
+
 from qgis.core import *
 
-import send2google_earthtool
+from .send2google_earthtool import Send2GEtool
 
 # initialize resources (icons) from resouces.py
-import resources
+from .resources import *
 
 class Send2GE:
 
@@ -39,22 +41,11 @@ class Send2GE:
     """Initialize class"""
     # save reference to QGIS interface
     self.iface = iface
-    self.qgsVersion = unicode(QGis.QGIS_VERSION_INT)
   
   def initGui(self):
     """Initialize graphic user interface"""
-    #check if the plugin is ran below 2.0
-    if int(self.qgsVersion) < 10900:
-        qgisVersion = self.qgsVersion[0] + "." + self.qgsVersion[2] + "." + self.qgsVersion[3]
-        QMessageBox.warning(self.iface.mainWindow(),
-                            "Send2GE", "Error",
-                            "Send2GE", "QGIS %s detected.\n" % (qgisVersion) +
-                            "Send2GE", "This version of TestPlugin requires at least QGIS version 2.0.\nPlugin will not be enabled.")
-        return None
-
     #create action that will be run by the plugin
-    self.action = QAction("Send to Google Earth", self.iface.mainWindow())
-    self.action.setIcon(QIcon(":/icons/cursor2.png"))
+    self.action = QAction(QIcon(":/icons/cursor2.png"), "Send to Google Earth", self.iface.mainWindow())
     self.action.setWhatsThis("Send to Google Earth")
     self.action.setStatusTip("Send coordinates of a mouse click to Google Earth")
     
@@ -68,7 +59,7 @@ class Send2GE:
     self.action.triggered.connect(self.run)
 
     # prepare map tool
-    self.mapTool = send2google_earthtool.Send2GEtool(self.iface)
+    self.mapTool = Send2GEtool(self.iface)
     #self.iface.mapCanvas().mapToolSet.connect(self.mapToolChanged)
       
   def unload(self):

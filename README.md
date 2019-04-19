@@ -1,7 +1,7 @@
 send2google_earth
 ==========
 
-This is a QGIS 2.0 plugin.
+This is a QGIS 3.0 plugin.
 
 It takes the coordinates of the mouse click, creates a temporary file and opens Google Earth at this location.
 
