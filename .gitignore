@@ -2,3 +2,9 @@
 .idea/
 *.zip
 *.pyc
+
+.directory
+
+# qpf
+qpf.py
+QGisPluginBase.py

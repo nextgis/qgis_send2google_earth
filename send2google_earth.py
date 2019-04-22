@@ -24,28 +24,31 @@
 #
 #******************************************************************************
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QAction
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui import *
+from qgis.PyQt.QtWidgets import QAction
 
 from qgis.core import *
 
+from .compat import get_file_dir
 from .send2google_earthtool import Send2GEtool
 
-# initialize resources (icons) from resouces.py
-from .resources import *
 
 class Send2GE:
-
   def __init__(self, iface):
     """Initialize class"""
     # save reference to QGIS interface
     self.iface = iface
-  
+    self.plugin_dir = get_file_dir(__file__)
+
   def initGui(self):
     """Initialize graphic user interface"""
     #create action that will be run by the plugin
-    self.action = QAction(QIcon(":/icons/cursor2.png"), "Send to Google Earth", self.iface.mainWindow())
+    self.action = QAction(
+        QIcon("%s/icons/cursor2.png" % self.plugin_dir),
+        "Send to Google Earth",
+        self.iface.mainWindow()
+    )
     self.action.setWhatsThis("Send to Google Earth")
     self.action.setStatusTip("Send coordinates of a mouse click to Google Earth")
     

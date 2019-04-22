@@ -24,18 +24,21 @@
 #
 #******************************************************************************
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QApplication, QMessageBox
-
-from qgis.core import *
-from qgis.gui import *
-
-from .resources import *
 import os
 import tempfile
 import platform
 import subprocess
+
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui import *
+from qgis.PyQt.QtWidgets import QApplication, QMessageBox
+
+from qgis.core import *
+from qgis.gui import *
+
+from .compat import get_file_dir, PY3
+from .qgis23 import QgsCoordinateTransform
+
 
 class Send2GEtool(QgsMapTool):
   def __init__(self, iface):
@@ -45,16 +48,19 @@ class Send2GEtool(QgsMapTool):
     #self.emitPoint = QgsMapToolEmitPoint(self.canvas)
     self.iface = iface
 
-    self.cursor = QCursor(QPixmap(':/icons/cursor2.png'), 1, 1)
+    self.plugin_dir = get_file_dir(__file__)
+
+    self.cursor = QCursor(
+        QPixmap('%s/icons/cursor2.png' % self.plugin_dir),
+        1, 1
+    )
 
   def activate(self):
     self.canvas.setCursor(self.cursor)
 
-  def create_kml(x,y):
-    
-    
+  def create_kml(x, y):
     return f
-  
+
   def canvasReleaseEvent(self, event):
 
     QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -62,16 +68,18 @@ class Send2GEtool(QgsMapTool):
     y = event.pos().y()
     point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
     QApplication.restoreOverrideCursor()
-    
-    
+
     crsSrc = self.canvas.mapSettings().destinationCrs()
     crsWGS = QgsCoordinateReferenceSystem(4326)
-    
+
     if crsSrc.authid() != "4326":
-        xform = QgsCoordinateTransform(crsSrc, crsWGS, QgsProject.instance())
+        xform = QgsCoordinateTransform(crsSrc, crsWGS)
         point = xform.transform(point)
-    
-    f = tempfile.NamedTemporaryFile(suffix = ".kml",delete=False, mode='w', encoding='utf-8')
+
+    if PY3:
+        f = tempfile.NamedTemporaryFile(suffix=".kml", delete=False, mode='w', encoding='utf-8')
+    else:
+        f = tempfile.NamedTemporaryFile(suffix=".kml", delete=False, mode='w')
     f.write(r'<?xml version="1.0" encoding="UTF-8"?>')
     f.write(r'<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">')
     f.write(r'<Document>')
@@ -90,13 +98,15 @@ class Send2GEtool(QgsMapTool):
 
     unknown = False
     ret = 0
-    
+
     if platform.system() == 'Windows':
         winpath = r'C:/Program Files/Google/Google Earth/client/googleearth.exe'
-        if not os.path.exists(winpath): winpath = r'C:/Program Files (x86)/Google/Google Earth/client/googleearth.exe'
-        if not os.path.exists(
-            winpath): winpath = r'C:/Program Files (x86)/Google/Google Earth Pro/client/googleearth.exe'
-        if not os.path.exists(winpath): winpath = r'C:/Program Files/Google/Google Earth Pro/client/googleearth.exe'
+        if not os.path.exists(winpath):
+            winpath = r'C:/Program Files (x86)/Google/Google Earth/client/googleearth.exe'
+        if not os.path.exists(winpath):
+            winpath = r'C:/Program Files (x86)/Google/Google Earth Pro/client/googleearth.exe'
+        if not os.path.exists(winpath):
+            winpath = r'C:/Program Files/Google/Google Earth Pro/client/googleearth.exe'
 
         if event.modifiers() == Qt.ShiftModifier:
             subprocess.Popen([winpath, f.name])
@@ -134,15 +144,23 @@ class Send2GEtool(QgsMapTool):
         args.extend(coordinates_keys)
         args.extend(["Return"])
         subprocess.call(args)
-      
-    elif platform.system() == "Darwin":
-      ret = os.system("open " + f.name)
-    else:
-      unknown = True
 
-    if unknown == True:
-      QMessageBox.warning(self.canvas,'Error','Unknown operation system. Please let developers of the plugin know.')
+    elif platform.system() == "Darwin":
+        ret = os.system("open " + f.name)
+    else:
+        unknown = True
+
+    if unknown is True:
+        QMessageBox.warning(
+            self.canvas,
+            'Error',
+            'Unknown operation system. Please let developers of the plugin know.'
+        )
     if ret != 0:
-      QMessageBox.warning(self.canvas,'Error','Unable to send to GE, executable not found.\n I tried ' + linpath)
-    
-    #os.unlink(f.name)
+        QMessageBox.warning(
+            self.canvas,
+            'Error',
+            'Unable to send to GE, executable not found.\n I tried ' + linpath
+        )
+
+    # os.unlink(f.name)
