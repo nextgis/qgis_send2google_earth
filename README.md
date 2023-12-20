@@ -1,20 +1,27 @@
-send2google_earth
-==========
+# Send2GE
 
-This is a QGIS 3.0 plugin.
+A QGIS plugin. Open coordinates of a mouse click in Google Earth.
 
-It takes the coordinates of the mouse click, creates a temporary file and opens Google Earth at this location.
+QGIS plugins page: https://plugins.qgis.org/plugins/send2google_earth/ 
 
-Tested on Windows 7, Ubuntu 13.04, MacOS 10.8.5
+
+## Sends current location to Google Earth
+
+![send2ge](https://github.com/nextgis/qgis_send2google_earth/assets/101568545/635e60c6-dcab-4062-b7bd-a46b1f03fbbb)
+
+## YouTube
+-------------
+[![HnNm7BhXPyU](https://github.com/nextgis/qgis_send2google_earth/assets/101568545/052597a8-5b20-43d5-94a1-5d0bb5e34c57)](https://youtu.be/HnNm7BhXPyU)
 
 License
 -------------
-This program is licensed under GNU GPL v2 or any later version
+This program is licensed under GNU GPL v.2 or any later version.
 
 Commercial support
-----------
-Need to fix a bug or add a feature to Send2Google Earth? 
+------------------
+Need to fix a bug or add a feature to Send2GE?
 
-We provide custom development and support for this software. [Contact us](https://nextgis.com/contact/) to discuss options!
+We provide custom development and support for this software. [Contact us](https://nextgis.com/contact/?utm_source=nextgis-github&utm_medium=plugins&utm_campaign=send2ge) to discuss options!
 
-[![https://nextgis.com](https://nextgis.com/img/nextgis.png)](https://nextgis.com)
+
+[![https://nextgis.com](https://nextgis.com/img/nextgis_x-logo.png)](https://nextgis.com?utm_source=nextgis-github&utm_medium=plugins&utm_campaign=send2ge)
