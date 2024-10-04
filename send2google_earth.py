@@ -59,10 +59,13 @@ class Send2GE:
             QCoreApplication.installTranslator(translator)
             self._translator = translator  # Should be kept in memory
 
-        add_translator(path.join(
-            self.plugin_dir, 'i18n',
-            'send2google_earth_{}.qm'.format(locale)
-        ))
+        add_translator(
+            path.join(
+                self.plugin_dir,
+                "i18n",
+                "send2google_earth_{}.qm".format(locale),
+            )
+        )
 
     def initGui(self):
         """Initialize graphic user interface"""
@@ -70,15 +73,14 @@ class Send2GE:
         self.action = QAction(
             QIcon("%s/icons/cursor2.png" % self.plugin_dir),
             "Send to Google Earth",
-            self.iface.mainWindow()
+            self.iface.mainWindow(),
         )
         self.action.setWhatsThis("Send to Google Earth")
-        self.action.setStatusTip("Send coordinates of a mouse click to Google Earth")
-
-        self.actionAbout = QAction(
-            self.tr("About"),
-            self.iface.mainWindow()
+        self.action.setStatusTip(
+            "Send coordinates of a mouse click to Google Earth"
         )
+
+        self.actionAbout = QAction(self.tr("About"), self.iface.mainWindow())
 
         # add plugin menu to Vector toolbar
         self.iface.addPluginToMenu("Send2GoogleEarth", self.action)

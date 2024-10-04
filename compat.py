@@ -19,6 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+
 import os
 import sys
 
@@ -31,6 +32,7 @@ if PY2:
     from urllib2 import urlopen, URLError
 else:
     from urllib import parse
+
     urlparse = parse
     from urllib.request import urlopen, URLError
 

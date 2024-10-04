@@ -39,6 +39,7 @@ if QGis.QGIS_VERSION_INT >= 30000:
 else:
     from qgis.gui import QgsMessageBar
     from qgis.core import QgsMessageLog
+
     message_log_levels = {
         "Info": QgsMessageLog.INFO,
         "Warning": QgsMessageLog.WARNING,
@@ -57,9 +58,9 @@ else:
         "NoGeometry": QGis.NoGeometry,
     }
 
-QGis23MessageLogLevel = type('QGis23MessageLogLevel', (), (message_log_levels))
-QGis23MessageBarLevel = type('QGis23MessageBarLevel', (), (message_bar_levels))
-QGis23GeometryType = type('QGisGeometryType', (), (geometry_types))
+QGis23MessageLogLevel = type("QGis23MessageLogLevel", (), (message_log_levels))
+QGis23MessageBarLevel = type("QGis23MessageBarLevel", (), (message_bar_levels))
+QGis23GeometryType = type("QGisGeometryType", (), (geometry_types))
 
 
 class QgsCoordinateTransform(core.QgsCoordinateTransform):
