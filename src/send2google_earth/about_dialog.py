@@ -8,7 +8,7 @@ from qgis.core import QgsSettings
 from qgis.utils import pluginMetadata
 
 FORM_CLASS, _ = uic.loadUiType(
-    os.path.join(os.path.dirname(__file__), "about_dialog_base.ui")
+    os.path.join(os.path.dirname(__file__), "ui/about_dialog_base.ui")
 )
 
 

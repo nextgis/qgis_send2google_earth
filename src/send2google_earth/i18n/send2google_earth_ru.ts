@@ -4,17 +4,17 @@
 <context>
     <name>AboutDialogBase</name>
     <message>
-        <location filename="../about_dialog_base.ui" line="14"/>
+        <location filename="../ui/about_dialog_base.ui" line="14"/>
         <source>About {plugin_name}</source>
         <translation>О {plugin_name}</translation>
     </message>
     <message>
-        <location filename="../about_dialog_base.ui" line="27"/>
+        <location filename="../ui/about_dialog_base.ui" line="27"/>
         <source>&lt;p align=&quot;center&quot;&gt;{plugin_name}&lt;/p&gt;</source>
         <translation>&lt;p align=&quot;center&quot;&gt;{plugin_name}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../about_dialog_base.ui" line="40"/>
+        <location filename="../ui/about_dialog_base.ui" line="40"/>
         <source>&lt;p&gt;{description}&lt;/p&gt;
 &lt;p&gt;{about}&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;Developers:&lt;/b&gt; &lt;a href=&quot;{main_url}&quot;&gt;{authors}&lt;/a&gt;&lt;/p&gt;
@@ -48,7 +48,7 @@
 <context>
     <name>Send2GE</name>
     <message>
-        <location filename="../send2google_earth.py" line="78"/>
+        <location filename="../send2google_earth.py" line="83"/>
         <source>About</source>
         <translation>О модуле...</translation>
     </message>
