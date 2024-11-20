@@ -97,6 +97,15 @@ class Send2GE:
         self.mapTool = Send2GEtool(self.iface)
         # self.iface.mapCanvas().mapToolSet.connect(self.mapToolChanged)
 
+        self.__show_help_action = QAction(
+            QIcon(f"{self.plugin_dir}/icons/icon.png"),
+            "Send2GE",
+        )
+        self.__show_help_action.triggered.connect(self.about)
+        plugin_help_menu = self.iface.pluginHelpMenu()
+        assert plugin_help_menu is not None
+        plugin_help_menu.addAction(self.__show_help_action)
+
     def unload(self):
         """Actions to run when the plugin is unloaded"""
         # remove menu and icon from the menu
