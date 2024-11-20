@@ -1,12 +1,12 @@
 [project]
 name = "send2google_earth"
-version = "0.3.1"
+version = "0.4.0"
 readme = "README.md"
 license = { file = "LICENSE" }
 
 
 [tool.qgspb.package-data]
-"send2google_earth.icons" = ["cursor.png", "cursor2.png", "icon.png"]
+"send2google_earth.icons" = ["*.png", "*.svg"]
 
 [tool.qgspb.forms]
 ui-files = ["src/send2google_earth/ui/*.ui"]

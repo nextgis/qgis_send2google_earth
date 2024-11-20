@@ -9,10 +9,13 @@ version=0.4.0
 qgisMinimumVersion=3.22
 qgisMaximumVersion=3.99
 
-author=Maxim Dubinin (NextGIS)
+author=NextGIS
 email=info@nextgis.com
 
 changelog=
+    0.4.0
+        * Updated the "About plugin" dialog
+        * Added plugin item to help menu
     0.3.1
         * Сompatible with  QGIS2 and QGIS3
     0.3
