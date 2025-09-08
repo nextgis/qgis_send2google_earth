@@ -35,6 +35,8 @@ icon=icons/icon.png
 tags=google,google earth
 
 homepage=https://github.com/nextgis/send2google_earth
+user_guide=https://docs.nextgis.com/docs_ngqgis/source/send2ge.html
+user_guide[ru]=https://docs.nextgis.ru/docs_ngqgis/source/send2ge.html
 tracker=https://github.com/nextgis/send2google_earth/issues
 repository=https://github.com/nextgis/send2google_earth
 video=https://youtu.be/HnNm7BhXPyU
@@ -42,3 +44,4 @@ video[ru]=https://youtu.be/LrJ8VAX6vbQ
 
 experimental=False
 deprecated=False
+supportsQt6=True
