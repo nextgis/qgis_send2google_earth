@@ -26,6 +26,7 @@
 
 import os
 import tempfile
+from pathlib import Path
 import platform
 import subprocess
 
@@ -36,9 +37,6 @@ from qgis.PyQt.QtWidgets import QApplication, QMessageBox
 from qgis.core import *
 from qgis.gui import *
 
-from .compat import get_file_dir, PY3
-from .qgis23 import QgsCoordinateTransform
-
 
 class Send2GEtool(QgsMapTool):
     def __init__(self, iface):
@@ -48,10 +46,10 @@ class Send2GEtool(QgsMapTool):
         # self.emitPoint = QgsMapToolEmitPoint(self.canvas)
         self.iface = iface
 
-        self.plugin_dir = get_file_dir(__file__)
+        self.plugin_dir = Path(__file__).parent
 
         self.cursor = QCursor(
-            QPixmap("%s/icons/cursor2.png" % self.plugin_dir), 1, 1
+            QPixmap(str(self.plugin_dir / "icons" / "cursor2.png")), 1, 1
         )
 
     def activate(self):
@@ -68,20 +66,18 @@ class Send2GEtool(QgsMapTool):
         QApplication.restoreOverrideCursor()
 
         crsSrc = self.canvas.mapSettings().destinationCrs()
-        crsWGS = QgsCoordinateReferenceSystem(4326)
+        crsWGS = QgsCoordinateReferenceSystem("EPSG:4326")
 
         if crsSrc.authid() != "4326":
-            xform = QgsCoordinateTransform(crsSrc, crsWGS)
+            xform = QgsCoordinateTransform(
+                crsSrc, crsWGS, self.canvas.mapSettings().transformContext()
+            )
             point = xform.transform(point)
 
-        if PY3:
-            f = tempfile.NamedTemporaryFile(
-                suffix=".kml", delete=False, mode="w", encoding="utf-8"
-            )
-        else:
-            f = tempfile.NamedTemporaryFile(
-                suffix=".kml", delete=False, mode="w"
-            )
+        f = tempfile.NamedTemporaryFile(
+            suffix=".kml", delete=False, mode="w", encoding="utf-8"
+        )
+
         f.write(r'<?xml version="1.0" encoding="UTF-8"?>')
         f.write(
             r'<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">'

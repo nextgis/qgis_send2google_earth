@@ -25,6 +25,7 @@
 # ******************************************************************************
 import os
 from os import path
+from pathlib import Path
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtWidgets import QAction
@@ -33,7 +34,6 @@ from qgis.PyQt.QtCore import QTranslator, QCoreApplication
 from qgis.core import *
 from qgis.core import QgsApplication
 
-from .compat import get_file_dir
 from .send2google_earthtool import Send2GEtool
 from . import about_dialog
 
@@ -43,7 +43,7 @@ class Send2GE:
         """Initialize class"""
         # save reference to QGIS interface
         self.iface = iface
-        self.plugin_dir = get_file_dir(__file__)
+        self.plugin_dir = Path(__file__).parent
         self._translator = None
         self.__init_translator()
 
@@ -61,7 +61,7 @@ class Send2GE:
 
         add_translator(
             path.join(
-                self.plugin_dir,
+                str(self.plugin_dir),
                 "i18n",
                 "send2google_earth_{}.qm".format(locale),
             )
@@ -71,7 +71,7 @@ class Send2GE:
         """Initialize graphic user interface"""
         # create action that will be run by the plugin
         self.action = QAction(
-            QIcon("%s/icons/cursor2.png" % self.plugin_dir),
+            QIcon(str(self.plugin_dir / "icons" / "cursor2.png")),
             "Send to Google Earth",
             self.iface.mainWindow(),
         )
@@ -98,7 +98,7 @@ class Send2GE:
         # self.iface.mapCanvas().mapToolSet.connect(self.mapToolChanged)
 
         self.__show_help_action = QAction(
-            QIcon(f"{self.plugin_dir}/icons/icon.png"),
+            QIcon(str(self.plugin_dir / "icons" / "icon.png")),
             "Send2GE",
         )
         self.__show_help_action.triggered.connect(self.about)
@@ -130,5 +130,5 @@ class Send2GE:
         return QCoreApplication.translate(__class__.__name__, message)
 
     def about(self):
-        dialog = about_dialog.AboutDialog(os.path.basename(self.plugin_dir))
+        dialog = about_dialog.AboutDialog(self.plugin_dir.name)
         dialog.exec()
