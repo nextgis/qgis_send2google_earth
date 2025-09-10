@@ -61,7 +61,7 @@ class Send2GEtool(QgsMapTool):
         return f
 
     def canvasReleaseEvent(self, event):
-        QApplication.setOverrideCursor(Qt.WaitCursor)
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         x = event.pos().x()
         y = event.pos().y()
         point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
@@ -120,7 +120,7 @@ class Send2GEtool(QgsMapTool):
             if not os.path.exists(winpath):
                 winpath = r"C:/Program Files/Google/Google Earth Pro/client/googleearth.exe"
 
-            if event.modifiers() == Qt.ShiftModifier:
+            if event.modifiers() == Qt.KeyboardModifier.ShiftModifier:
                 subprocess.Popen([winpath, f.name])
             else:
                 os.startfile(f.name)
