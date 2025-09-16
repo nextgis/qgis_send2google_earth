@@ -33,7 +33,7 @@ from qgis.PyQt.QtCore import QTranslator, QCoreApplication
 from qgis.core import *
 from qgis.core import QgsApplication
 
-from .compat import get_file_dir
+from .compat import get_file_dir, exec_dialog
 from .send2google_earthtool import Send2GEtool
 from . import about_dialog
 
@@ -131,4 +131,4 @@ class Send2GE:
 
     def about(self):
         dialog = about_dialog.AboutDialog(os.path.basename(self.plugin_dir))
-        dialog.exec()
+        exec_dialog(dialog)

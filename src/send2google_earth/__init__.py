@@ -24,7 +24,6 @@
 #
 # ******************************************************************************
 
-
 def classFactory(iface):
     # Import class TestPlugin from file testplugin.py
     from .send2google_earth import Send2GE

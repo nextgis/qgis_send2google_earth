@@ -36,7 +36,7 @@ from qgis.PyQt.QtWidgets import QApplication, QMessageBox
 from qgis.core import *
 from qgis.gui import *
 
-from .compat import get_file_dir, PY3
+from .compat import get_file_dir, PY3, get_wait_cursor, get_shift_modifier
 from .qgis23 import QgsCoordinateTransform
 
 
@@ -61,7 +61,7 @@ class Send2GEtool(QgsMapTool):
         return f
 
     def canvasReleaseEvent(self, event):
-        QApplication.setOverrideCursor(Qt.WaitCursor)
+        QApplication.setOverrideCursor(get_wait_cursor())
         x = event.pos().x()
         y = event.pos().y()
         point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
@@ -120,7 +120,7 @@ class Send2GEtool(QgsMapTool):
             if not os.path.exists(winpath):
                 winpath = r"C:/Program Files/Google/Google Earth Pro/client/googleearth.exe"
 
-            if event.modifiers() == Qt.ShiftModifier:
+            if event.modifiers() == get_shift_modifier():
                 subprocess.Popen([winpath, f.name])
             else:
                 os.startfile(f.name)

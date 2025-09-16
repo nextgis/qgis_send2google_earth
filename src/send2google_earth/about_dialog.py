@@ -6,9 +6,14 @@ from qgis.core import QgsSettings
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QFile, QLocale, QSize, Qt, QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QIcon, QPixmap
-from qgis.PyQt.QtSvg import QSvgWidget
 from qgis.PyQt.QtWidgets import QDialog, QLabel, QWidget
 from qgis.utils import pluginMetadata
+
+from .compat import get_svg_widget, get_aspect_ratio_mode
+
+# Get QSvgWidget with compatibility
+QSvgWidget = get_svg_widget()
+AspectRatioMode = get_aspect_ratio_mode()
 
 CURRENT_PATH = Path(__file__).parent
 UI_PATH = Path(__file__).parent / "ui"
@@ -91,16 +96,18 @@ class AboutDialog(QDialog, Ui_AboutDialogBase):
         icon_path = Path(__file__).parent / str(metadata.get("icon_path"))
         svg_icon_path = icon_path.with_suffix(".svg")
 
-        if svg_icon_path.exists():
+        if svg_icon_path.exists() and QSvgWidget is not None:
             icon_widget: QWidget = QSvgWidget(str(svg_icon_path), self)
             icon_size: QSize = icon_widget.sizeHint()
         else:
-            pixmap = QPixmap(str(icon_path))
+            # Fall back to pixmap if SVG widget is not available or SVG file doesn't exist
+            icon_path_to_use = icon_path if not svg_icon_path.exists() else svg_icon_path
+            pixmap = QPixmap(str(icon_path_to_use))
             if pixmap.size().height() > header_size.height():
                 pixmap = pixmap.scaled(
                     header_size.height(),
                     header_size.height(),
-                    Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+                    AspectRatioMode.KeepAspectRatioByExpanding,
                 )
 
             icon_size: QSize = pixmap.size()

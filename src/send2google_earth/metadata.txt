@@ -5,14 +5,16 @@ description[ru]=Отправляет текущее местоположение
 about=Grab current location and send it to Google Earth. Focus can be shifted to GE (default) or you can keep QGIS active if SHIFT is pressed (convenient when GE is on a different screen). Developed by NextGIS. Any feedback is welcome at https://nextgis.com/contact
 about[ru]=Захватите текущее местоположение и отправьте его в Google Earth. Фокус можно переместить на GE (по умолчанию) или оставить QGIS активным, если нажать SHIFT (удобно, когда GE находится на другом экране). Разработан компанией NextGIS. Любые отзывы приветствуются на https://nextgis.com/contact.
 category=Vector
-version=0.4.0
+version=0.5.0
 qgisMinimumVersion=3.22
-qgisMaximumVersion=3.99
-
+qgisMaximumVersion=4.99
+supportsQt6=True
 author=NextGIS
 email=info@nextgis.com
 
 changelog=
+    0.5.0
+        * support QGIS>=4.0 (Qt6 support)
     0.4.0
         * Updated the "About plugin" dialog
         * Added plugin item to help menu
