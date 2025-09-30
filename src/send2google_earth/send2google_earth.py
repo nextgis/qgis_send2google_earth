@@ -47,6 +47,8 @@ class Send2GE:
         self._translator = None
         self.__init_translator()
 
+        self.mapTool = Send2GEtool(self.iface)
+
     def __init_translator(self):
         # initialize locale
         locale = QgsApplication.instance().locale()
@@ -94,7 +96,6 @@ class Send2GE:
         self.actionAbout.triggered.connect(self.about)
 
         # prepare map tool
-        self.mapTool = Send2GEtool(self.iface)
         # self.iface.mapCanvas().mapToolSet.connect(self.mapToolChanged)
 
         self.__show_help_action = QAction(
