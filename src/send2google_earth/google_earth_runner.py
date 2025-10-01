@@ -20,16 +20,19 @@ from typing import Optional
 import shutil
 import subprocess
 
+from send2google_earth.kml_generator import KmlGenerator
+
 
 class GoogleEarthRunner(ABC):
     """Abstract base class for launching Google Earth."""
 
     @abstractmethod
-    def run(self, kml_file: Path) -> None:
+    def run(self, lon: float, lat: float) -> None:
         """
-        Run Google Earth with the given KML file.
+        Run Google Earth with given coordinates.
 
-        :param kml_file: Path to the KML file.
+        :param lon: Longitude.
+        :param lat: Latitude.
         """
         raise NotImplementedError
 
@@ -50,12 +53,14 @@ class WindowsGoogleEarthRunner(GoogleEarthRunner):
         ),
     ]
 
-    def run(self, kml_file: Path) -> None:
+    def run(self, lon: float, lat: float) -> None:
         """
         Run GE either by association or hardcoded paths.
 
-        :param kml_file: Path to the KML file.
+        :param lon: Longitude.
+        :param lat: Latitude.
         """
+        kml_file = KmlGenerator.create(lon, lat)
         for candidate in self._candidate_paths:
             if candidate.exists():
                 subprocess.Popen([str(candidate), str(kml_file)])
@@ -109,12 +114,14 @@ class LinuxGoogleEarthRunner(GoogleEarthRunner):
 
     _candidate_binaries = ["google-earth", "google-earth-pro"]
 
-    def run(self, kml_file: Path) -> None:
+    def run(self, lon: float, lat: float) -> None:
         """
         Run GE via binary or flatpak.
 
-        :param kml_file: Path to the KML file.
+        :param lon: Longitude.
+        :param lat: Latitude.
         """
+        kml_file = KmlGenerator.create(lon, lat)
         for binary in self._candidate_binaries:
             ge_path = shutil.which(binary)
             if ge_path:
@@ -146,10 +153,12 @@ class LinuxGoogleEarthRunner(GoogleEarthRunner):
 class MacOSGoogleEarthRunner(GoogleEarthRunner):
     """macOS implementation of Google Earth runner."""
 
-    def run(self, kml_file: Path) -> None:
+    def run(self, lon: float, lat: float) -> None:
         """
         Run GE via 'open'.
 
-        :param kml_file: Path to the KML file.
+        :param lon: Longitude.
+        :param lat: Latitude.
         """
+        kml_file = KmlGenerator.create(lon, lat)
         subprocess.Popen(["open", str(kml_file)])

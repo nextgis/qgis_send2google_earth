@@ -39,4 +39,4 @@ class GoogleEarthRunnerFactory:
             return LinuxGoogleEarthRunner()
         if system == "Darwin":
             return MacOSGoogleEarthRunner()
-        raise RuntimeError(f"Unsupported OS: {system}")
+        raise NotImplementedError(f"Unsupported OS: {system}")

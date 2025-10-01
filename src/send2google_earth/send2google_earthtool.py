@@ -75,44 +75,12 @@ class Send2GEtool(QgsMapTool):
             )
             point = xform.transform(point)
 
-        kml_file = self._create_kml_file(point.x(), point.y())
-
         try:
             runner = GoogleEarthRunnerFactory.create()
-            runner.run(kml_file)
+            runner.run(point.x(), point.y())
         except Exception as err:
             QMessageBox.warning(
                 self.canvas,
                 "Error",
                 f"Failed to run Google Earth: {err}",
             )
-
-    def _create_kml_file(self, lon: float, lat: float) -> Path:
-        """
-        Create temporary KML file with given coordinates.
-
-        :param lon: Longitude.
-        :param lat: Latitude.
-        :return: Path to created KML file.
-        """
-        with tempfile.NamedTemporaryFile(
-            suffix=".kml", delete=False, mode="w", encoding="utf-8"
-        ) as kml_file:
-            kml_file.write('<?xml version="1.0" encoding="UTF-8"?>')
-            kml_file.write(
-                '<kml xmlns="http://www.opengis.net/kml/2.2" '
-                'xmlns:gx="http://www.google.com/kml/ext/2.2" '
-                'xmlns:kml="http://www.opengis.net/kml/2.2" '
-                'xmlns:atom="http://www.w3.org/2005/Atom">'
-            )
-            kml_file.write("<Document>")
-            kml_file.write(f"<name>{Path(kml_file.name).name}</name>")
-            kml_file.write("<Placemark>")
-            kml_file.write("<Point>")
-            kml_file.write("<name>test</name>")
-            kml_file.write(f"<coordinates>{lon},{lat},0</coordinates>")
-            kml_file.write("</Point>")
-            kml_file.write("</Placemark>")
-            kml_file.write("</Document>")
-            kml_file.write("</kml>")
-            return Path(kml_file.name)
