@@ -20,6 +20,8 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import ClassVar, List, Optional
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 from send2google_earth.kml_generator import KmlGenerator
 
 
@@ -35,6 +37,16 @@ class GoogleEarthRunner(ABC):
         :param lat: Latitude.
         """
         raise NotImplementedError
+
+    @staticmethod
+    def tr(message: str) -> str:
+        """
+        Translate the given message.
+
+        :param message: Message to translate.
+        :return: Translated string.
+        """
+        return QCoreApplication.translate(__class__.__name__, message)
 
 
 class WindowsGoogleEarthRunner(GoogleEarthRunner):
@@ -75,7 +87,9 @@ class WindowsGoogleEarthRunner(GoogleEarthRunner):
             return
 
         raise FileNotFoundError(
-            "Google Earth not found or not associated with .kml files."
+            self.tr(
+                "Google Earth not found or not associated with .kml files."
+            )
         )
 
     def _get_kml_association(self) -> Optional[Path]:
@@ -122,7 +136,7 @@ class LinuxGoogleEarthRunner(GoogleEarthRunner):
         tool = shutil.which("xdotool")
         if not tool:
             raise RuntimeError(
-                "xdotool not found. Please install it and try again."
+                self.tr("xdotool not found. Please install it and try again.")
             )
 
         google_earth_window_name = "Google Earth"
@@ -136,7 +150,9 @@ class LinuxGoogleEarthRunner(GoogleEarthRunner):
             subprocess.check_call(args)
         except subprocess.CalledProcessError as err:
             raise RuntimeError(
-                "Google Earth is not running. Please start it and try again."
+                self.tr(
+                    "Google Earth is not running. Please start it and try again."
+                )
             ) from err
 
         coordinates_str = f"{lat} {lon}"

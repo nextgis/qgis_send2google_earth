@@ -66,12 +66,12 @@ class Send2GE:
 
         self.send_click_action = QAction(
             QIcon(str(self.plugin_dir / "icons" / "cursor2.png")),
-            "Send to Google Earth",
+            self.tr("Send to Google Earth"),
             self.iface.mainWindow(),
         )
-        self.send_click_action.setWhatsThis("Send to Google Earth")
+        self.send_click_action.setWhatsThis(self.tr("Send to Google Earth"))
         self.send_click_action.setStatusTip(
-            "Send coordinates of a mouse click to Google Earth"
+            self.tr("Send coordinates of a mouse click to Google Earth")
         )
         self.send_click_action.triggered.connect(self.run)
 

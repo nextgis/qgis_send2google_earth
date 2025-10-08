@@ -16,6 +16,8 @@
 
 import platform
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 from send2google_earth.google_earth_runner import (
     GoogleEarthRunner,
     LinuxGoogleEarthRunner,
@@ -39,4 +41,8 @@ class GoogleEarthRunnerFactory:
             return LinuxGoogleEarthRunner()
         if system == "Darwin":
             return MacOSGoogleEarthRunner()
-        raise NotImplementedError(f"Unsupported OS: {system}")
+        raise NotImplementedError(
+            QCoreApplication.translate(
+                "GoogleEarthRunnerFactory", "Unsupported OS: {}"
+            ).format(system)
+        )

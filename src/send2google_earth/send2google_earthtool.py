@@ -84,6 +84,6 @@ class Send2GEtool(QgsMapTool):
         except Exception as err:
             QMessageBox.warning(
                 self.canvas,
-                "Error",
-                f"Failed to run Google Earth: {err}",
+                self.tr("Error"),
+                self.tr("Failed to run Google Earth: {}").format(err),
             )
