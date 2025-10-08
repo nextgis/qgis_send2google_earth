@@ -112,42 +112,54 @@ class WindowsGoogleEarthRunner(GoogleEarthRunner):
 class LinuxGoogleEarthRunner(GoogleEarthRunner):
     """Linux implementation of Google Earth runner."""
 
-    _candidate_binaries = ["google-earth", "google-earth-pro"]
-
     def run(self, lon: float, lat: float) -> None:
         """
-        Run GE via binary or flatpak.
+        Send coordinates to running Google Earth via xdotool.
 
-        :param lon: Longitude.
-        :param lat: Latitude.
+        :param lon: Longitude
+        :param lat: Latitude
         """
-        kml_file = KmlGenerator.create(lon, lat)
-        for binary in self._candidate_binaries:
-            ge_path = shutil.which(binary)
-            if ge_path:
-                subprocess.Popen([ge_path, str(kml_file)])
-                return
-
-        # Try Flatpak
-        flatpak_bin = shutil.which("flatpak")
-        if flatpak_bin:
-            result = subprocess.run(
-                [flatpak_bin, "list"], capture_output=True, text=True
+        tool = shutil.which("xdotool")
+        if not tool:
+            raise RuntimeError(
+                "xdotool not found. Please install it and try again."
             )
-            if "com.google.GoogleEarthPro" in result.stdout:
-                subprocess.Popen(
-                    [
-                        flatpak_bin,
-                        "run",
-                        "com.google.GoogleEarthPro",
-                        str(kml_file),
-                    ]
-                )
-                return
 
-        raise FileNotFoundError(
-            "Google Earth not found (neither binary nor Flatpak)."
-        )
+        google_earth_window_name = "Google Earth"
+
+        args = [tool, "search", "--name", google_earth_window_name]
+        args.extend(["windowactivate", "--sync", "%@"])
+        args.extend(["mousemove", "--window", "%@", "15", "65"])
+        args.extend(["click", "--repeat", "3", "1"])
+
+        try:
+            subprocess.check_call(args)
+        except subprocess.CalledProcessError as err:
+            raise RuntimeError(
+                "Google Earth is not running. Please start it and try again."
+            ) from err
+
+        coordinates_str = f"{lat} {lon}"
+        args = [tool, "search", "--name", google_earth_window_name]
+        args.extend(["windowactivate", "--sync", "%@"])
+
+        coordinates_keys = ["key", "--window", "%@"]
+        for symbol in coordinates_str:
+            if symbol == "-":
+                symbol = "minus"
+            elif symbol == " ":
+                symbol = "space"
+            elif symbol == ".":
+                symbol = "U002E"
+            else:
+                coordinates_keys.append(symbol)
+                continue
+            coordinates_keys.append(symbol)
+
+        coordinates_keys.append("Return")
+        args.extend(coordinates_keys)
+
+        subprocess.check_call(args)
 
 
 class MacOSGoogleEarthRunner(GoogleEarthRunner):
