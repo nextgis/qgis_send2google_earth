@@ -4,54 +4,59 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../about_dialog.py" line="220"/>
+        <location filename="../about_dialog.py" line="252"/>
         <source>Developers</source>
         <translation>Разработчики</translation>
     </message>
     <message>
-        <location filename="../about_dialog.py" line="221"/>
+        <location filename="../about_dialog.py" line="253"/>
         <source>Homepage</source>
         <translation>Домашняя страница</translation>
     </message>
     <message>
-        <location filename="../about_dialog.py" line="222"/>
+        <location filename="../about_dialog.py" line="255"/>
         <source>Please report bugs at</source>
         <translation>Пожалуйста, сообщайте об ошибках в</translation>
     </message>
     <message>
-        <location filename="../about_dialog.py" line="225"/>
+        <location filename="../about_dialog.py" line="258"/>
         <source>Video with an overview of the plugin</source>
         <translation>Видео с обзором плагина</translation>
     </message>
     <message>
-        <location filename="../about_dialog.py" line="226"/>
+        <location filename="../about_dialog.py" line="259"/>
         <source>Other helpful services by NextGIS</source>
         <translation>Другие полезные сервисы от NextGIS</translation>
     </message>
     <message>
-        <location filename="../about_dialog.py" line="227"/>
+        <location filename="../about_dialog.py" line="260"/>
         <source>Convenient up-to-date data extracts for any place in the world</source>
         <translation>Удобная выборка актуальных данных из любой точки мира</translation>
     </message>
     <message>
-        <location filename="../about_dialog.py" line="230"/>
+        <location filename="../about_dialog.py" line="263"/>
         <source>Fully featured Web GIS service</source>
         <translation>Полнофункциональный Веб ГИС-сервис</translation>
     </message>
     <message>
-        <location filename="../about_dialog.py" line="215"/>
+        <location filename="../about_dialog.py" line="247"/>
         <source>REPORT_END</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../about_dialog.py" line="224"/>
+        <location filename="../about_dialog.py" line="257"/>
         <source>bugtracker</source>
         <translation>багтрекер</translation>
     </message>
     <message>
-        <location filename="../about_dialog.py" line="75"/>
+        <location filename="../about_dialog.py" line="108"/>
         <source> by NextGIS</source>
         <translation> от NextGIS</translation>
+    </message>
+    <message>
+        <location filename="../about_dialog.py" line="254"/>
+        <source>User Guide</source>
+        <translation>Руководство пользователя</translation>
     </message>
 </context>
 <context>
@@ -107,11 +112,63 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>GoogleEarthRunnerFactory</name>
+    <message>
+        <location filename="../google_earth_runner_factory.py" line="44"/>
+        <source>Unsupported OS: {}</source>
+        <translation>Неподдерживаемая операционная система: {}</translation>
+    </message>
+</context>
+<context>
+    <name>LinuxGoogleEarthRunner</name>
+    <message>
+        <location filename="../google_earth_runner.py" line="138"/>
+        <source>xdotool not found. Please install it and try again.</source>
+        <translation>Утилита xdotool не найдена. Установите её и повторите попытку.</translation>
+    </message>
+    <message>
+        <location filename="../google_earth_runner.py" line="152"/>
+        <source>Google Earth is not running. Please start it and try again.</source>
+        <translation>Приложение Google Earth не запущено. Запустите его и повторите попытку.</translation>
+    </message>
+</context>
+<context>
     <name>Send2GE</name>
     <message>
-        <location filename="../send2google_earth.py" line="83"/>
-        <source>About</source>
-        <translation>О модуле</translation>
+        <location filename="../send2google_earth.py" line="72"/>
+        <source>Send to Google Earth</source>
+        <translation>Отправить метку в Google Earth</translation>
+    </message>
+    <message>
+        <location filename="../send2google_earth.py" line="73"/>
+        <source>Send coordinates of a mouse click to Google Earth</source>
+        <translation>Отправляет координаты клика мышью в Google Earth</translation>
+    </message>
+    <message>
+        <location filename="../send2google_earth.py" line="78"/>
+        <source>About plugin…</source>
+        <translation>О модуле…</translation>
+    </message>
+</context>
+<context>
+    <name>Send2GEtool</name>
+    <message>
+        <location filename="../send2google_earthtool.py" line="85"/>
+        <source>Error</source>
+        <translation>Ошибка</translation>
+    </message>
+    <message>
+        <location filename="../send2google_earthtool.py" line="85"/>
+        <source>Failed to run Google Earth: {}</source>
+        <translation>Не удалось запустить Google Earth: {}</translation>
+    </message>
+</context>
+<context>
+    <name>WindowsGoogleEarthRunner</name>
+    <message>
+        <location filename="../google_earth_runner.py" line="89"/>
+        <source>Google Earth not found or not associated with .kml files.</source>
+        <translation>Google Earth не найден или не настроен для открытия файлов с расширением .kml.</translation>
     </message>
 </context>
 </TS>
