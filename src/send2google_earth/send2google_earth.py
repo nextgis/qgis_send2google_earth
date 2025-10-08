@@ -20,7 +20,7 @@ from qgis.core import QgsApplication
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import QCoreApplication, QTranslator
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtWidgets import QAction, QMenu
 
 from send2google_earth.about_dialog import AboutDialog
 from send2google_earth.send2google_earthtool import Send2GEtool
@@ -60,25 +60,34 @@ class Send2GE:
 
     def initGui(self) -> None:
         """Create actions and add them to the QGIS GUI."""
-        self.action = QAction(
+        self.menu = QMenu(self.iface.mainWindow())
+        self.menu.setTitle("Send2GoogleEarth")
+        self.menu.setIcon(QIcon(str(self.plugin_dir / "icons" / "icon.png")))
+
+        self.send_click_action = QAction(
             QIcon(str(self.plugin_dir / "icons" / "cursor2.png")),
             "Send to Google Earth",
             self.iface.mainWindow(),
         )
-        self.action.setWhatsThis("Send to Google Earth")
-        self.action.setStatusTip(
+        self.send_click_action.setWhatsThis("Send to Google Earth")
+        self.send_click_action.setStatusTip(
             "Send coordinates of a mouse click to Google Earth"
         )
+        self.send_click_action.triggered.connect(self.run)
 
-        self.action_about = QAction(self.tr("About"), self.iface.mainWindow())
-
-        self.iface.addPluginToMenu("Send2GoogleEarth", self.action)
-        self.iface.addPluginToMenu("Send2GoogleEarth", self.action_about)
-
-        self.iface.addToolBarIcon(self.action)
-
-        self.action.triggered.connect(self.run)
+        self.action_about = QAction(
+            QgsApplication.getThemeIcon("mActionPropertiesWidget.svg"),
+            self.tr("About plugin…"),
+            self.iface.mainWindow(),
+        )
         self.action_about.triggered.connect(self.about)
+
+        self.menu.addAction(self.send_click_action)
+        self.menu.addAction(self.action_about)
+
+        self.iface.pluginMenu().addMenu(self.menu)
+
+        self.iface.addToolBarIcon(self.send_click_action)
 
         self.__show_help_action = QAction(
             QIcon(str(self.plugin_dir / "icons" / "icon.png")),
@@ -90,12 +99,20 @@ class Send2GE:
         plugin_help_menu.addAction(self.__show_help_action)
 
     def unload(self) -> None:
-        """Remove actions and icons when the plugin is unloaded."""
-        self.iface.removeToolBarIcon(self.action)
-        self.iface.removePluginMenu("Send2GoogleEarth", self.action)
-        self.iface.removePluginMenu("Send2GoogleEarth", self.action_about)
-        self.action.deleteLater()
+        """Remove actions and toolbar icon when the plugin is unloaded."""
+        self.iface.removeToolBarIcon(self.send_click_action)
+
+        if self.menu is not None:
+            self.iface.pluginMenu().removeAction(self.menu.menuAction())
+            self.menu.deleteLater()
+
+        self.send_click_action.deleteLater()
         self.action_about.deleteLater()
+
+        plugin_help_menu = self.iface.pluginHelpMenu()
+        assert plugin_help_menu is not None
+        plugin_help_menu.removeAction(self.__show_help_action)
+        self.__show_help_action.deleteLater()
 
         if self.iface.mapCanvas().mapTool() == self.map_tool:
             self.iface.mapCanvas().unsetMapTool(self.map_tool)
