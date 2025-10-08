@@ -1,4 +1,4 @@
-# QGIS DevTools Plugin
+# Send2GE Plugin
 # Copyright (C) 2025  NextGIS
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,9 +18,9 @@ import platform
 
 from send2google_earth.google_earth_runner import (
     GoogleEarthRunner,
-    WindowsGoogleEarthRunner,
     LinuxGoogleEarthRunner,
     MacOSGoogleEarthRunner,
+    WindowsGoogleEarthRunner,
 )
 
 

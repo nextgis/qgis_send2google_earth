@@ -1,77 +1,65 @@
-# -*- coding: utf-8 -*-
-# ******************************************************************************
+# Send2GE Plugin
+# Copyright (C) 2025  NextGIS
 #
-# Send2Google_Earth
-# ---------------------------------------------------------
-# This plugin takes coordinates of a mouse click and sends them to Google Earth
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or any
+# later version.
 #
-# Copyright (C) 2013 Maxim Dubinin (sim@gis-lab.info), NextGIS (info@nextgis.org)
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-# This source is free software; you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free
-# Software Foundation, either version 2 of the License, or (at your option)
-# any later version.
-#
-# This code is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-# details.
-#
-# A copy of the GNU General Public License is available on the World Wide Web
-# at <http://www.gnu.org/licenses/>. You can also obtain it by writing
-# to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
-# MA 02110-1335 USA.
-#
-# ******************************************************************************
-import os
-from os import path
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, see <https://www.gnu.org/licenses/>.
+
 from pathlib import Path
-from qgis.PyQt.QtCore import *
-from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import QAction
-from qgis.PyQt.QtCore import QTranslator, QCoreApplication
 
-from qgis.core import *
 from qgis.core import QgsApplication
+from qgis.gui import QgisInterface
+from qgis.PyQt.QtCore import QCoreApplication, QTranslator
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction
 
-from .send2google_earthtool import Send2GEtool
-from . import about_dialog
+from send2google_earth.about_dialog import AboutDialog
+from send2google_earth.send2google_earthtool import Send2GEtool
 
 
 class Send2GE:
-    def __init__(self, iface):
-        """Initialize class"""
-        # save reference to QGIS interface
+    """QGIS Plugin to send map coordinates to Google Earth."""
+
+    def __init__(self, iface: QgisInterface) -> None:
+        """
+        Initialize class
+
+        :param iface: An interface instance provided by QGIS.
+        :type iface: QgisInterface
+        """
         self.iface = iface
         self.plugin_dir = Path(__file__).parent
         self._translator = None
         self.__init_translator()
 
-        self.mapTool = Send2GEtool(self.iface)
+        self.map_tool = Send2GEtool(self.iface)
 
-    def __init_translator(self):
-        # initialize locale
+    def __init_translator(self) -> None:
+        """Initialize translation support."""
         locale = QgsApplication.instance().locale()
-
-        def add_translator(locale_path):
-            if not path.exists(locale_path):
-                return
-            translator = QTranslator()
-            translator.load(locale_path)
-            QCoreApplication.installTranslator(translator)
-            self._translator = translator  # Should be kept in memory
-
-        add_translator(
-            path.join(
-                str(self.plugin_dir),
-                "i18n",
-                "send2google_earth_{}.qm".format(locale),
-            )
+        locale_file = (
+            self.plugin_dir / "i18n" / f"send2google_earth_{locale}.qm"
         )
 
-    def initGui(self):
-        """Initialize graphic user interface"""
-        # create action that will be run by the plugin
+        if not locale_file.exists():
+            return
+
+        translator = QTranslator()
+        translator.load(str(locale_file))
+        QCoreApplication.installTranslator(translator)
+        self._translator = translator
+
+    def initGui(self) -> None:
+        """Create actions and add them to the QGIS GUI."""
         self.action = QAction(
             QIcon(str(self.plugin_dir / "icons" / "cursor2.png")),
             "Send to Google Earth",
@@ -82,21 +70,15 @@ class Send2GE:
             "Send coordinates of a mouse click to Google Earth"
         )
 
-        self.actionAbout = QAction(self.tr("About"), self.iface.mainWindow())
+        self.action_about = QAction(self.tr("About"), self.iface.mainWindow())
 
-        # add plugin menu to Vector toolbar
         self.iface.addPluginToMenu("Send2GoogleEarth", self.action)
-        self.iface.addPluginToMenu("Send2GoogleEarth", self.actionAbout)
+        self.iface.addPluginToMenu("Send2GoogleEarth", self.action_about)
 
-        # add icon to new menu item in Vector toolbar
         self.iface.addToolBarIcon(self.action)
 
-        # connect action to the run method
         self.action.triggered.connect(self.run)
-        self.actionAbout.triggered.connect(self.about)
-
-        # prepare map tool
-        # self.iface.mapCanvas().mapToolSet.connect(self.mapToolChanged)
+        self.action_about.triggered.connect(self.about)
 
         self.__show_help_action = QAction(
             QIcon(str(self.plugin_dir / "icons" / "icon.png")),
@@ -107,29 +89,36 @@ class Send2GE:
         assert plugin_help_menu is not None
         plugin_help_menu.addAction(self.__show_help_action)
 
-    def unload(self):
-        """Actions to run when the plugin is unloaded"""
-        # remove menu and icon from the menu
+    def unload(self) -> None:
+        """Remove actions and icons when the plugin is unloaded."""
         self.iface.removeToolBarIcon(self.action)
         self.iface.removePluginMenu("Send2GoogleEarth", self.action)
-        self.iface.removePluginMenu("Send2GoogleEarth", self.actionAbout)
+        self.iface.removePluginMenu("Send2GoogleEarth", self.action_about)
         self.action.deleteLater()
-        self.actionAbout.deleteLater()
+        self.action_about.deleteLater()
 
-        if self.iface.mapCanvas().mapTool() == self.mapTool:
-            self.iface.mapCanvas().unsetMapTool(self.mapTool)
+        if self.iface.mapCanvas().mapTool() == self.map_tool:
+            self.iface.mapCanvas().unsetMapTool(self.map_tool)
 
-        del self.mapTool
+        del self.map_tool
 
-    def run(self):
-        """Action to run"""
-        # create a string and show it
+    def run(self) -> None:
+        """Set the map tool for capturing clicks."""
+        self.iface.mapCanvas().setMapTool(self.map_tool)
 
-        self.iface.mapCanvas().setMapTool(self.mapTool)
+    def tr(self, message: str) -> str:
+        """
+        Translate the given message.
 
-    def tr(self, message):
+        :param message: Message to be translated.
+        :type message: str
+
+        :return: Translated message string.
+        :rtype: str
+        """
         return QCoreApplication.translate(__class__.__name__, message)
 
-    def about(self):
-        dialog = about_dialog.AboutDialog(self.plugin_dir.name)
+    def about(self) -> None:
+        """Show the About dialog."""
+        dialog = AboutDialog(self.plugin_dir.name)
         dialog.exec()

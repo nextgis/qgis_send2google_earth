@@ -1,4 +1,4 @@
-# QGIS DevTools Plugin
+# Send2GE Plugin
 # Copyright (C) 2025  NextGIS
 #
 # This program is free software; you can redistribute it and/or modify
@@ -14,11 +14,11 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, see <https://www.gnu.org/licenses/>.
 
-from abc import ABC, abstractmethod
-from pathlib import Path
-from typing import Optional
 import shutil
 import subprocess
+from abc import ABC, abstractmethod
+from pathlib import Path
+from typing import ClassVar, List, Optional
 
 from send2google_earth.kml_generator import KmlGenerator
 
@@ -40,7 +40,7 @@ class GoogleEarthRunner(ABC):
 class WindowsGoogleEarthRunner(GoogleEarthRunner):
     """Windows implementation of Google Earth runner."""
 
-    _candidate_paths = [
+    _candidate_paths: ClassVar[List[Path]] = [
         Path("C:/Program Files/Google/Google Earth/client/googleearth.exe"),
         Path(
             "C:/Program Files (x86)/Google/Google Earth/client/googleearth.exe"

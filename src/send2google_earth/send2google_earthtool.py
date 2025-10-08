@@ -1,41 +1,29 @@
-# -*- coding: utf-8 -*-
-# ******************************************************************************
+# Send2GE Plugin
+# Copyright (C) 2025  NextGIS
 #
-# Send2Google_Earth
-# ---------------------------------------------------------
-# This plugin takes coordinates of a mouse click and sends them to Google Earth
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or any
+# later version.
 #
-# Copyright (C) 2013-2015 Maxim Dubinin (sim@gis-lab.info), NextGIS (info@nextgis.org)
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-# This source is free software; you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free
-# Software Foundation, either version 2 of the License, or (at your option)
-# any later version.
-#
-# This code is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-# details.
-#
-# A copy of the GNU General Public License is available on the World Wide Web
-# at <http://www.gnu.org/licenses/>. You can also obtain it by writing
-# to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
-# MA 02110-1335 USA.
-#
-# ******************************************************************************
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, see <https://www.gnu.org/licenses/>.
 
-import os
-import tempfile
 from pathlib import Path
-import platform
-import subprocess
 
-from qgis.PyQt.QtCore import *
-from qgis.PyQt.QtGui import *
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+)
+from qgis.gui import QgisInterface, QgsMapTool
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QCursor, QMouseEvent, QPixmap
 from qgis.PyQt.QtWidgets import QApplication, QMessageBox
-
-from qgis.core import *
-from qgis.gui import *
 
 from send2google_earth.google_earth_runner_factory import (
     GoogleEarthRunnerFactory,
@@ -43,11 +31,19 @@ from send2google_earth.google_earth_runner_factory import (
 
 
 class Send2GEtool(QgsMapTool):
-    def __init__(self, iface):
-        QgsMapTool.__init__(self, iface.mapCanvas())
+    """
+    Map tool to capture mouse clicks and send coordinates to Google Earth.
+    """
+
+    def __init__(self, iface: QgisInterface) -> None:
+        """Initialize the map tool.
+
+        :param iface: An interface instance provided by QGIS.
+        :type iface: QgisInterface
+        """
+        super().__init__(iface.mapCanvas())
 
         self.canvas = iface.mapCanvas()
-        # self.emitPoint = QgsMapToolEmitPoint(self.canvas)
         self.iface = iface
 
         self.plugin_dir = Path(__file__).parent
@@ -56,22 +52,29 @@ class Send2GEtool(QgsMapTool):
             QPixmap(str(self.plugin_dir / "icons" / "cursor2.png")), 1, 1
         )
 
-    def activate(self):
+    def activate(self) -> None:
         self.canvas.setCursor(self.cursor)
 
-    def canvasReleaseEvent(self, event):
+    def canvasReleaseEvent(self, event: QMouseEvent) -> None:
+        """Handle mouse release event on the canvas.
+
+        :param event: Mouse release event from QGIS canvas.
+        :type event: QMouseEvent
+        """
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-        x = event.pos().x()
-        y = event.pos().y()
-        point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
+        coord_x = event.pos().x()
+        coord_y = event.pos().y()
+        point = self.canvas.getCoordinateTransform().toMapCoordinates(
+            coord_x, coord_y
+        )
         QApplication.restoreOverrideCursor()
 
-        crsSrc = self.canvas.mapSettings().destinationCrs()
-        crsWGS = QgsCoordinateReferenceSystem("EPSG:4326")
+        crs_src = self.canvas.mapSettings().destinationCrs()
+        crs_wgs = QgsCoordinateReferenceSystem("EPSG:4326")
 
-        if crsSrc.authid() != "4326":
+        if crs_src.authid() != "4326":
             xform = QgsCoordinateTransform(
-                crsSrc, crsWGS, self.canvas.mapSettings().transformContext()
+                crs_src, crs_wgs, self.canvas.mapSettings().transformContext()
             )
             point = xform.transform(point)
 

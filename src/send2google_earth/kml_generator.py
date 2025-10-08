@@ -1,4 +1,4 @@
-# QGIS DevTools Plugin
+# Send2GE Plugin
 # Copyright (C) 2025  NextGIS
 #
 # This program is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, see <https://www.gnu.org/licenses/>.
 
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
 
 class KmlGenerator:
