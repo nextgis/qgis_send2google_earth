@@ -14,15 +14,21 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, see <https://www.gnu.org/licenses/>.
 
+import contextlib
+import platform
 import shutil
 import subprocess
 from abc import ABC, abstractmethod
+from functools import lru_cache
 from pathlib import Path
-from typing import ClassVar, List, Optional
+from typing import TYPE_CHECKING, ClassVar, List, Optional
 
 from qgis.PyQt.QtCore import QCoreApplication
 
 from send2google_earth.kml_generator import KmlGenerator
+
+if platform.system() == "Windows" or TYPE_CHECKING:
+    import winreg
 
 
 class GoogleEarthRunner(ABC):
@@ -73,10 +79,6 @@ class WindowsGoogleEarthRunner(GoogleEarthRunner):
         :param lat: Latitude.
         """
         kml_file = KmlGenerator.create(lon, lat)
-        for candidate in self._candidate_paths:
-            if candidate.exists():
-                subprocess.Popen([str(candidate), str(kml_file)])
-                return
 
         associated_path = self._get_kml_association()
         if (
@@ -86,41 +88,50 @@ class WindowsGoogleEarthRunner(GoogleEarthRunner):
             subprocess.Popen([str(associated_path), str(kml_file)])
             return
 
+        for candidate in self._candidate_paths:
+            if candidate.exists():
+                subprocess.Popen([str(candidate), str(kml_file)])
+                return
+
         raise FileNotFoundError(
             self.tr(
                 "Google Earth not found or not associated with .kml files."
             )
         )
 
-    def _get_kml_association(self) -> Optional[Path]:
+    @staticmethod
+    @lru_cache(maxsize=1)
+    def _get_kml_association() -> Optional[Path]:
         """
         Return path to application associated with .kml files.
         Returns None if association not found.
         """
-        import winreg
+        prog_id = None
 
-        try:
+        with contextlib.suppress(FileNotFoundError):
             with winreg.OpenKey(
                 winreg.HKEY_CURRENT_USER,
                 r"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.kml\UserChoice",
             ) as key:
                 prog_id, _ = winreg.QueryValueEx(key, "ProgId")
-        except FileNotFoundError:
-            try:
+
+        if not prog_id:
+            with contextlib.suppress(FileNotFoundError):
                 with winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, ".kml") as key:
                     prog_id, _ = winreg.QueryValueEx(key, "")
-            except FileNotFoundError:
-                return None
 
-        try:
+        if not prog_id:
+            return None
+
+        with contextlib.suppress(Exception):
             with winreg.OpenKey(
-                winreg.HKEY_CLASSES_ROOT, f"{prog_id}\\shell\\open\\command"
+                winreg.HKEY_CLASSES_ROOT,
+                f"{prog_id}\\shell\\open\\command",
             ) as key:
                 command, _ = winreg.QueryValueEx(key, "")
-                exe_path = Path(command.split('"')[1])
-                return exe_path
-        except Exception:
-            return None
+                return Path(command.split('"')[1])
+
+        return None
 
 
 class LinuxGoogleEarthRunner(GoogleEarthRunner):
